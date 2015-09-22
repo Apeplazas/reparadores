@@ -1,0 +1,60 @@
+@charset "UTF-8";
+/*---------------- Generals  ------------------*/
+.bodydefault{background-color:#F3EFEC;}
+.bodyProfile{background-color:#E0E0E1;}
+
+.clear{clear:both;}
+.dnone{display:none}
+.dinline{display:inline}
+.fleft{float:left;}
+.fright{float:right;}
+.mark{font-weight:bold;}
+.prel{position:relative;}
+.rad{border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}
+.tcenter{text-align:center;}
+.italic{font-style:italic;}
+
+/*---------------- Margins  ------------------*/
+.mr20{margin-right:20px;}
+.mt20{margin-top:20px;}
+.mt10{margin-top:10px;}
+.mr10{margin-right:10px;}
+.mb20{margin-bottom:20px;}
+.mt45{margin-top:35px;}
+.mt5{margin-top:5px;}
+.mtb10{margin:10px 0;}
+.ml20{margin-left:20px;}
+.p010{padding:0 10px;}
+.pb10{padding-bottom:10px;}
+
+
+/*---------------- General bottons ------------------*/
+.botMain{background: #FF1A38; background:-moz-linear-gradient(top, #1b7ff2 20%, #D51630 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(20%, #FF1A38), color-stop(100%, #D51630)); background:-webkit-linear-gradient(top, #FF1A38 20%, #D51630 100%); background:-o-linear-gradient(top, #FF1A38 20%, #D51630 100%); background:-ms-linear-gradient(top, #FF1A38 20%, #D51630 100%);
+background:linear-gradient(top, #FF1A38 20%, #D51630 100%)
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FF1A38', endColorstr = '#D51630', GradientType = 0);
+box-shadow: 0 4px 10px -6px #000, inset 0 1px 0 0 #FF7373; color:#fff; padding:12px 45px; min-width:100px; text-align:center; height:28px; margin:10px 10px 10px 0; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; font-size:1.8em; text-shadow:-1px -1px 1px #000;}
+.botMain:hover{background:-moz-linear-gradient(top, #1b7ff2 20%, #D51630 100%); background:-webkit-gradient(linear, left top, left bottom, color-stop(20%, #C92134), color-stop(100%, #D51630)); background:-webkit-linear-gradient(top, #C92134 20%, #D51630 100%); background:-o-linear-gradient(top, #C92134 20%, #D51630 100%); background:-ms-linear-gradient(top, #C92134 20%, #D51630 100%);
+background:linear-gradient(top, #C92134 20%, #D51630 100%)
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FF1A38', endColorstr = '#D51630', GradientType = 0);}
+.botAct{background-color:#E84D36; color:#fff; padding:12px 30px 0; min-width:100px; text-align:center; height:28px; margin:10px 10px 10px 0; text-transform:uppercase; border:1px solid #E84D36; cursor:pointer;}
+.botRedForm{background-color:#E84D36; color:#fff; padding:12px 30px 12px; border:none; font-size:1.2em; min-width:100px; text-align:center; margin:10px 10px 10px 0; text-transform:uppercase; cursor:pointer;}
+.botAct:hover, .botRedForm:hover{background-color:#C92134;}
+.botMain:hover{background-color:#00639F;}
+.botSec{text-transform:uppercase; background-color:#555; color:#fff; border:1px solid #000; padding:12px 30px 0; height:28px; min-width:100px; text-align:center; cursor:pointer; margin:10px 10px 10px 0; }
+.botSec:hover{background-color:#333;}
+.botBlack{background-color:#555; color:#fff; padding:9px 40px; min-width:100px; text-align:center; margin:7px 10px; text-transform:uppercase; border:1px solid #333; border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px; cursor:pointer;}
+.botBlack:hover{background-color:#333;}
+
+/*---------------- Color Fuentes ------------------*/
+#regFormWhite a, #loginForm a, .markColor{color:#E84D36;}
+
+/*---------------- Delineados ------------------*/
+.boLin{background:url(../graphics/bck-line.png) left bottom repeat-x;}
+
+/*---------------- scheme 1 ------------------*/
+#leftWrap{float:left; height:600px; width:30%; margin-right:2%; padding:20px 0;}
+#rightWrap{float:left; width:64%; background:url(../graphics/bck-rightLine.png) left top repeat-y; height:600px; padding:20px 0 20px 1%;}
+
+/*---------------- herramientas ------------------*/
+.attach{float:left; background:url(../graphics/sprite-vertical.png) -4px -753px no-repeat; cursor:pointer; text-indent:-9999px; height:25px; width:20px; overflow:hidden; padding:10px;}
+.koobs{float:left; background:url(../graphics/sprite-vertical.png) -2px -707px no-repeat; cursor:pointer; text-indent:-9999px; height:25px; width:20px; overflow:hidden; padding:10px;}
