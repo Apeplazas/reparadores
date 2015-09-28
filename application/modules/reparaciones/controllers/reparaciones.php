@@ -51,18 +51,20 @@ class Reparaciones extends MX_Controller{
 		
 		/***Geolocalizacion***/
 		//Ver si la busqueda es por estado
-		if($estado){
-				
-			if(!empty($subcategoriaUrl) && $subcategoriaUrl != "all")
-				$queryTemp = " WHERE cc.url='".$subcategoriaUrl."' AND eu.estadoNombre='".$estado."' AND (u.tipoUsuario ='reparador' OR u.tipoUsuario ='mixto')";
-			else
-				$queryTemp = " WHERE c.url='".$url."' AND eu.estadoNombre='".$estado."' AND (u.tipoUsuario ='reparador' OR u.tipoUsuario ='mixto')";
-
-			$op['reparadores'] = $this->data_model->cargarReparadoresPorConsulta($queryTemp);
-
-		//Si la busqueda no es por estado tomar cordenadas
-		}else{
-
+		/*
+		 //Ya no aplica la bisqueda por estado solo muestra resulatados más cercanos
+			if($estado){
+		
+				if(!empty($subcategoriaUrl) && $subcategoriaUrl != "all")
+					$queryTemp = " WHERE cc.url='".$subcategoriaUrl."' AND eu.estadoNombre='".$estado."' AND (u.tipoUsuario ='reparador' OR u.tipoUsuario ='mixto')";
+				else
+					$queryTemp = " WHERE c.url='".$url."' AND eu.estadoNombre='".$estado."' AND (u.tipoUsuario ='reparador' OR u.tipoUsuario ='mixto')";
+	
+				$op['reparadores'] = $this->data_model->cargarReparadoresPorConsulta($queryTemp);
+	
+			//Si la busqueda no es por estado tomar cordenadas
+			}else{
+		*/
 			$usuarioCordenadas = $this->data_model->cargaCordenadasUsuario($user['usuarioID']);
 
 			//Si el usuario esta logeado tomar sus cordenadas
@@ -71,6 +73,11 @@ class Reparaciones extends MX_Controller{
 				$latDist = $usuarioCordenadas[0]->latitud;
 				$logDist = $usuarioCordenadas[0]->longitud; 
          		
+				$coordenadasGoo = explode(",", $usuarioCordenadas[0]->coordenadasGoogle);
+				
+				$op['lat']	= $coordenadasGoo[0];
+				$op['long'] = $coordenadasGoo[1];
+				
 			//tomamos cordenadas de ip
         	}else{
         		
@@ -78,18 +85,20 @@ class Reparaciones extends MX_Controller{
 				$usuarioIP 	= $this->ipinfo->getIPAddress();
 				$ipDatos 	= explode(';',$this->ipinfo->getCity($usuarioIP));
  
-				$latDist = deg2rad($ipDatos[8]);
-				$logDist = deg2rad($ipDatos[9]);	
+				$latDist = deg2rad("19.40403");
+				$logDist = deg2rad("-99.24183");	
+				
+				$op['lat']	= "19.40403";
+				$op['long'] = "-99.24183";
 				
         	}
 
-			$dist = 100;
-			$op['reparadores']	= $this->data_model->cargaRaparadoresPorDistacias($latDist,$logDist,$dist,$subcategoriaUrl,$estado);
+			$dist = 50;
+			$op['reparadores']	= $this->data_model->cargaRaparadoresPorDistacias($latDist,$logDist,$dist,$subcategoriaUrl);
+		//}
 		
-		}
-		
-		if(empty($op['reparadores']))
-			$op['reparadores'] = $this->data_model->cargaRaparadoresTodos();	
+		//if(empty($op['reparadores']))
+			//$op['reparadores'] = $this->data_model->cargaRaparadoresTodos();	
 		
 		//Datos para el formulario de busqueda
 		$op['estados'] 			= $this->data_model->cargaEstados();

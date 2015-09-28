@@ -441,5 +441,20 @@ class Ajax extends MX_Controller {
 		$this->load->view('vistaHabilidades-view', $op);
  
 	}
+
+	function addMarkers(){
+		
+		$latDist	= deg2rad($_POST['userLat']);
+		$logDist 	= deg2rad($_POST['userLong']);
+		
+		$distMin	= $_POST['currentMinDist'];
+		$distMax	= $_POST['currentMaxDist'];
+		
+		$reparadores	= $this->data_model->cargaRaparadoresPorLimiteDistacia($latDist,$logDist,$distMin,$distMax);
+		
+		echo json_encode($reparadores);
+		exit;
+		
+	}
 	
 }

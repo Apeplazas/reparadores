@@ -53,7 +53,7 @@ $route['aviso-privacidad'] = "avisoprivacidad";
 //Route para usuarios
 $route['(^((?!(^(reparacion-de-celulares|reparacion-de-tablets|reparacion-de-computadoras|reparacion-de-impresoras|reparacion-de-camaras|reparacion-de-laptops|reparacion-de-videojuegos|reparacion-de-monitores|lista-de-reparadores-en-mexico))).)*)'] = "usuarios/perfiles/$1";
 //Route para categorias
-$route['(^(reparacion-de-celulares|reparacion-de-tablets|reparacion-de-computadoras|reparacion-de-impresoras|reparacion-de-camaras|reparacion-de-laptops|reparacion-de-videojuegos|reparacion-de-monitores|lista-de-reparadores-en-mexico)$)'] = "reparaciones/conocimiento/$1";
+$route['(^(reparacion-de-celulares|reparacion-de-tablets|reparacion-de-computadoras|reparacion-de-impresoras|reparacion-de-camaras|reparacion-de-laptops|reparacion-de-videojuegos|reparacion-de-monitores|lista-de-reparadores-en-mexico)$)'] = "reparaciones/subcategoria/$1";
 //Route para subcategorias
 $route['(^(reparacion-de-celulares|reparacion-de-tablets|reparacion-de-computadoras|reparacion-de-impresoras|reparacion-de-camaras|reparacion-de-laptops|reparacion-de-videojuegos|reparacion-de-monitores)\/.+$)'] = "reparaciones/subcategoria";
 

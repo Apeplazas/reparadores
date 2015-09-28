@@ -28,14 +28,10 @@
 			endif;
 		$fotoUrl = ($reparador->fotografiaPerfil == "sinImagen.png") ? "sinfotografia.png" : $reparador->fotografiaPerfil;
 		$googleCordenaadas[$reparador->usuarioId]['cordenadas'] = $reparador->coordenadasGoogle;
-		$googleCordenaadas[$reparador->usuarioId]['datos'] = "<div class='foto'><img src='" . base_url() . $fotoUrl . "' alt='" . ucfirst($reparador->nombreCompleto) . "' /></div><div class='test'><h3>" . $reparador->nombreCompleto . "</h3><p>" . character_limiter($reparador->bio,200) . "</p>" . $contenerdorExtra . "<a href='" . base_url() . $reparador->urlPersonalizado . "'><img src='" . base_url() . "assets/graphics/ver-mas.png' alt='Ver mas'></a><a class='accesoSoloUsuarios' data-fancybox-href='#ingresar' href='" . base_url() . "usuarios/contactar/" . $reparador->usuarioId . "?url=" . $this->uri->segment(1) . "'><img src='" . base_url() . "assets/graphics/contacto-reparador.png' alt='Contactar' /></a></div>";?>
+		$googleCordenaadas[$reparador->usuarioId]['datos'] = "<div class='foto'><img src='" . base_url() . $fotoUrl . "' alt='" . ucfirst($reparador->nombreCompleto) . "' /></div><div class='test'><h3>" . $reparador->nombreCompleto . "</h3><p>" . character_limiter($reparador->bio,200) . "</p>" . $contenerdorExtra . "<a href='" . base_url() . $reparador->urlPersonalizado . "'><img src='" . base_url() . "assets/graphics/ver-mas.png' alt='Ver mas'></a></div>";?>
 		<li class="lista">
 		<span>
-		<? if(file_exists($_SERVER['DOCUMENT_ROOT'].'/assets/graphics/'.$reparador->fotografiaPerfil)):?>
-			<img src="<?=base_url()?>assets/graphics/<?=$reparador->fotografiaPerfil;?>" alt="<?=$reparador->nombreCompleto;?>" />
-		<? else:?>
-			<img src="<?=base_url()?>assets/graphics/perfil-Reparador.png" alt="Imagen no disponible" />
-		<? endif;?>
+			<img src="<?=base_url() . $fotoUrl;?>" width="36px" height="36px" alt="<?=$reparador->nombreCompleto;?>" />
 		</span>
 		
 		<div class="repar contenedorReparador" id="<?=$reparador->usuarioId;?>" >
@@ -44,7 +40,7 @@
 				<p><?= character_limiter((isset($reparador->descripcionReparador)) ? $reparador->descripcionReparador : null, 50);?></p>
 				<em>A <?=number_format((float)$reparador->dist, 2, '.', '');?> KM</em>
 			</div>
-			<i><a id="contactarUsuario" class="accesoSoloUsuarios" data-fancybox-href="#ingresar" href="<?=base_url();?>usuarios/contactar/<?=$reparador->usuarioId;?>?url=<?=$this->uri->segment(1)."/".$this->uri->segment(2);?>"> Contactar</a></i>
+			<i><a id="contactarUsuario" href="<?= base_url() . $reparador->urlPersonalizado; ?>"> Contactar</a></i>
 			<!--i><a id="solicitaCotizacion" href="#<? if(!isset($usuario) || $usuario != true ) echo "ingresar"; else echo "mostrar-solicitudes-usuario";?>">Solicitar Cotización</a></i-->
 		</div>
 		</li>
@@ -79,6 +75,12 @@
 
 <script>
 $(document).ready(function(jQuery) {	
+	
+		var zoomCount		= 10;
+		var currentMinDist	= 50;
+		var currentMaxDist	= 50;
+		var userLat			= <?= $lat;?>;
+		var userLong		= <?= $long;?>;
 	
 		var geocoder, map, markers = [];
 		
@@ -240,7 +242,7 @@ $(document).ready(function(jQuery) {
 		  	
 		  	var mapOptions = {
 				center: centerCoord,
-				zoom: 11,
+				zoom: 12,
 				scrollwheel: false,
 				mapTypeId: google.maps.MapTypeId.ROADMAP,
 				styles: styles,
@@ -290,7 +292,7 @@ $(document).ready(function(jQuery) {
 	  		markers.push(marker<?=$key;?>);
 	  		
 	  		google.maps.event.addListener(marker<?=$key;?>, 'click', function(e) {
-	  			mostrarReparador(marker<?=$key;?>.customInfo);
+	  			//mostrarReparador(marker<?=$key;?>.customInfo);
 	  			$.each(markers,function(key,val){
 					val.setIcon("http://reparadores.mx/assets/graphics/marca-mapa.png");
 	  			});
@@ -310,6 +312,67 @@ $(document).ready(function(jQuery) {
 			});
 			*/
 		<?php endforeach;?>
+		
+		
+		google.maps.event.addListener(map,'zoom_changed', function() {
+			
+			if(map.getZoom() < zoomCount &&  map.getZoom() >= 5){
+				
+				zoomCount = zoomCount - 1;
+				
+				currentMaxDist	= (currentMaxDist*2)+currentMinDist;
+				
+				$.post(ajax_url+"addMarkers", {
+					userLat : userLat,
+					userLong : userLong,
+					currentMaxDist : currentMaxDist,
+					currentMinDist : currentMinDist
+				}, function(data) { sucess:
+					
+					$.each(data,function(index,val){
+						
+						var bio = (val.bio) ? val.bio.substring(1,200) : '';
+						var fotoUrl = (val.fotografiaPerfil == "sinImagen.png") ? "sinfotografia.png" : val.fotografiaPerfil;
+						var datosUser = "<div class='foto'><img src='<?php echo base_url();?>"
+						+ fotoUrl + "' alt='" + val.nombreCompleto + "' /></div> \
+							<div class='test'> \
+								<h3>" + val.nombreCompleto + "</h3><p>" + bio + " \
+								</p><a href='<?php echo base_url();?>" + val.urlPersonalizado + "'><img src='<?php echo base_url();?>assets/graphics/ver-mas.png' alt='Ver mas'></a> \
+							</div>";
+						var tempCoor	= val.coordenadasGoogle.split(",");
+						var centerCoord = new google.maps.LatLng(tempCoor[0],tempCoor[1]);
+						
+						var marker999 = new google.maps.Marker({
+							position: centerCoord,
+						   	map: map,
+						   	icon: 'http://reparadores.mx/assets/graphics/marca-mapa.png',
+						   	draggable:false,
+						   	test: datosUser
+					  	});
+					  		
+					  	markers.push(marker999);
+					  	
+					  	google.maps.event.addListener(marker999, 'click', function(e) {
+				  			//mostrarReparador(marker999.customInfo);
+				  			$.each(markers,function(key,val){
+								val.setIcon("http://reparadores.mx/assets/graphics/marca-mapa.png");
+				  			});
+				  			marker999.setIcon("http://reparadores.mx/assets/graphics/marca-mapa-activo.png");
+				  			if (infoWindow) {
+								infoWindow.close();
+							}
+							infoWindow.setContent(datosUser);
+							infoWindow.open(map, marker999);
+						});
+					  	
+					});
+					
+				},'json');
+				
+				currentMinDist = currentMaxDist;
+				
+			}
+		});
 		
 		map.setCenter(bounds.getCenter());
 		//map.fitBounds(bounds);

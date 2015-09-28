@@ -365,8 +365,42 @@ class Data_model extends CI_Model {
 			($condicion 	? " WHERE (u.tipoUsuario ='reparador' or u.tipoUsuario ='mixto') AND coordenadasGoogle IS NOT NULL AND" : " WHERE (u.tipoUsuario ='reparador' or u.tipoUsuario ='mixto') AND coordenadasGoogle IS NOT NULL") .
 			($subcat		? " cc.url='$subcat'" : "") .
 			($conjuncion 	? "AND" : "") .
-			($estado 		? " d.estadoNombre='$estado'" : "") .
+			($estado 		? " d.estadoNombre='$estado' GROUP BY u.usuarioId" : " GROUP BY u.usuarioId") .
 			($dist			? " HAVING dist<='$dist' ORDER BY dist ASC" : ""));
+		
+		if($q->num_rows() > 0) {
+			
+			foreach($q->result() as $row){
+				
+				$data[] = $row;
+				
+			}
+			
+			$q->free_result();
+		}
+		
+		return $data;	
+		
+	}
+	
+	function cargaRaparadoresPorLimiteDistacia($latDist,$logDist,$distMin,$distMax){
+
+		$data = array(); 
+		$q = $this->db->query("SELECT 
+			d.coordenadasGoogle,( (2*atan2(sqrt(a),sqrt(1-a)) ) * 6371 ) as dist,
+			u.*
+			FROM(
+				SELECT eu.usuarioId,eu.coordenadasGoogle,eu.estadoNombre, ( power(sin((eu.latitud - '$latDist')/2),2) +
+					cos('$latDist') * cos(eu.latitud) *
+					power(sin((eu.longitud - '$logDist')/2),2) ) as a
+					FROM estadosUsuarios eu
+			) d
+			LEFT JOIN usuarios u ON u.usuarioId=d.usuarioId
+			LEFT JOIN usuariosConocimientosCategorias uc ON uc.usuarioId=u.usuarioId
+			LEFt JOIN conocimientosCategorias cc ON cc.categoriaId=uc.categoriaId  
+			WHERE (u.tipoUsuario ='reparador' or u.tipoUsuario ='mixto') AND coordenadasGoogle IS NOT NULL 
+			GROUP BY u.usuarioId 
+			HAVING dist < '$distMax' AND dist > '$distMin' ORDER BY dist ASC");
 		
 		if($q->num_rows() > 0) {
 			
