@@ -31,6 +31,7 @@
 		<div class="centerWrap">
 		<a id="logo" href="<?=base_url()?>"><img src="<?=base_url()?>assets/graphics/logo-reparadores.png" alt="Reparadores Mx" /></a>
 		<span>
+			<img src="<?=base_url()?>assets/graphics/atencionaclientes-reparadores.png" alt="Atencion a clientes" />
 			<? if(!isset($user) || $user != true):?>
 				<a id="acceso" href="<?=base_url()?>registro/ingresar"><img src="<?=base_url()?>assets/graphics/acceso.png" alt="Accesar" /></a>
 			<? else:?>
@@ -52,34 +53,34 @@
 			<? endforeach;?>
 		</ul>
 		<a href="#" id="actiCom"><img src="<?=base_url()?>assets/graphics/compartenos.png" alt="Compartenos" /></a>
-
+		
 		</nav>
-
+		
 		<div id="breadCrumb">
 		<ul>
 			<li>
 				<a id="Inicio" href="<?=base_url()?>">Inicio</a>
 			</li>
-			<?
+			<?		
 			// load libary
 			$this->load->library('breadcrumbs');
-
+			
 			// add breadcrumbs
 			echo $this->breadcrumbs->generate_breadcrumb();
-
+			
 			?>
 		</ul>
 		</div>
 	</div>
-
-
+	
+	
 	<script type="text/javascript">
 	$(document).ready(function() {
 		$( "#actiCom" ).click(function() {
-			$("#compartelo, #comparteloDos").animate({top:'250px'}, {queue:false, duration:1500, easing: 'easeInOutBack'});
+			$("#compartelo, #comparteloDos").animate({top:'250px'}, {queue:false, duration:1500, easing: 'easeInOutBack'});   	
 		});
 		$( "#cerComp" ).click(function() {
-			$("#compartelo, #comparteloDos").animate({top:'-840px'}, {queue:false, duration:1500, easing: 'easeInOutBack'});
+			$("#compartelo, #comparteloDos").animate({top:'-840px'}, {queue:false, duration:1500, easing: 'easeInOutBack'});   	
 		});
 	});
 	</script>
