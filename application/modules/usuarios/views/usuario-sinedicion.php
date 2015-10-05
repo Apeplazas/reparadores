@@ -73,7 +73,7 @@
 		</li>
 	</ul>
 	<?php session_start();
-	if(!isset($_SESSION['DatosTemporalesUsuario'])):?> 
+	if(!isset($_SESSION['DatosTemporalesUsuario']) && !$usuario):?> 
 		<a class="contTw accesoUsuarioTemp" data-fancybox-href="#usuarioTemp" href="#"><img src="<?=base_url()?>assets/graphics/contactar-reparador.png" alt="Contactar"></a>
 	<?php else:?>
 		<p>Email: <?=$row->email;?></p>

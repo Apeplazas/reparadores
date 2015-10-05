@@ -29,8 +29,9 @@ class Usuarios extends MX_Controller
 		
 		$op['perfil']	= $this->usuario_model->buscaPerfilID($segmentoUno,'urlPersonalizado');
 			
-		$op['cat'] 		= $this->data_model->cargarConocimientos();
+		$op['cat'] 				= $this->data_model->cargarConocimientos();
 		$op['usurioTags']		= $this->usuario_model->cargarUsuarioTags($usuario['usuarioID']);
+		$op['usuario']			= $usuario;
 		$op['conocimientos'] 	= $this->usuario_model->cargarConocimientos($usuario['usuarioID']);
 		$op['trabajos']	= $this->usuario_model->cargarTrabajos($usuario['usuarioID']);
 		
