@@ -29,13 +29,13 @@
 	
 	
 	<?php if(!empty($estados)):?>
-	<label>Estado:</label>
+	<!--label>Estado:</label>
 	<select id="estadoReparador">
 		<option value="">Selecciona un estado</option>
 		<? foreach($estados as $estado): ?>
 		<option value="<?=$estado->estados;?>"><?=$estado->estados;?></option>
 		<? endforeach;?>
-	</select>
+	</select-->
 	<? endif;?>
 	<input id="filtroBoton" type="submit" value="Buscar" />
 	</span>
@@ -76,9 +76,9 @@ $(document).ready(function(){
 			e.preventDefault();
 			var cat 	= $('#categoriaReparadores').val();
 			var subcat 	= $('#subcategoriaReparadoresTwo').val();
-			var estado 	= $('#estadoReparador').val();
+			//var estado 	= $('#estadoReparador').val();
 			
-			var redirect = (estado) ? "<?=base_url();?>"+cat+"/"+subcat+"/"+estado : "<?=base_url();?>"+cat+"/"+subcat;
+			var redirect = "<?=base_url();?>"+cat+"/"+subcat;
 
 			window.location = redirect;
 			

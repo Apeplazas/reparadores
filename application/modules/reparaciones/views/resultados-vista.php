@@ -7,7 +7,9 @@
 <div id="lista">
 	<?= $this->session->flashdata('msg'); ?>
 	<ul>
-	<? foreach($reparadores as $reparador):
+	<? $i = 1;
+	$tempForm = '';
+	foreach($reparadores as $reparador):
 		$conocimietos = $this->data_model->cargarConID($reparador->usuarioId);
 		$contenerdorExtra = '';
 		if(!empty($conocimietos)): 
@@ -44,10 +46,16 @@
 			<!--i><a id="solicitaCotizacion" href="#<? if(!isset($usuario) || $usuario != true ) echo "ingresar"; else echo "mostrar-solicitudes-usuario";?>">Solicitar Cotización</a></i-->
 		</div>
 		</li>
-	<? endforeach; ?>
+		<? if($i <= 5){
+			$tempForm .= "<input type='hidden' name='tempRep[]' value='$reparador->email' />";
+		}
+		++$i;
+	endforeach; ?>
 	</ul>
 </div>
-
+	<form id="tempReparadores" style="display:none;" method="post" action="#">
+		<?= $tempForm;?>
+	</form>
 	<div id="map-canvas"></div>
 </div>
 <input type="hidden" id="reparadorIdTemporal" value="" />
@@ -490,7 +498,7 @@ Cambia la clase en la busqueda para pasar de box a horizontal
 </style>
 <div class="modal" style="display:none;">
 	<p>Se ha recibido su solicitud</p>
-	<a href="<?=base_url()?>">Finalizar</a><br />
+	<a href="#" class="enviarMailReparadores">Enviar correo a los 5 reparadores más cercanos.</a><br />
 	<a href="#" class="mostrarReparadores">Mostrar Reparadores</a>
 </div>
 
@@ -502,6 +510,12 @@ Cambia la clase en la busqueda para pasar de box a horizontal
     			$('.modal').show();
     			$('.mostrarReparadores').click(function(){
     				$('.modal').hide();
+    			});
+    			
+    			$('.enviarMailReparadores').click(function(){
+    				$.post(ajax_url+"enviarEmailCercanos",$('#tempReparadores').serialize(),function(data){
+					},"json");
+					$('.modal').hide();
     			});
     		});
     	</script>

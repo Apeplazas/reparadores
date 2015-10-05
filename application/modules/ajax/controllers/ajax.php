@@ -457,4 +457,157 @@ class Ajax extends MX_Controller {
 		
 	}
 	
+	function gusardaUsuarioTemp(){
+		
+		$nombre 		= $_POST['usuarioNombre'];
+		$email      	= $_POST['usuarioEmail'];
+		$telefono    	= $_POST['usuarioTel'];
+		$tipoReg    	= 'usuario';
+		
+		$reparadorId	= $_POST['reparadorId'];
+	
+		if(empty($nombre) || empty($email) || empty($telefono)){
+		
+			echo json_encode(false);
+			exit;
+			
+		}
+		
+		$this->load->model('registro/registro_model');
+		
+		$mail			= $this->registro_model->confirmaEmail($email);		
+		
+		if(!$mail){
+			
+			//Obtener ip de usuario
+			if ( isset($_SERVER['HTTP_CLIENT_IP']) && ! empty($_SERVER['HTTP_CLIENT_IP'])) {
+						
+				$ip = $_SERVER['HTTP_CLIENT_IP'];
+						
+			}elseif( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+						
+				$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+						
+			}else{
+						
+				$ip = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+						
+			}
+					
+			$ip = filter_var($ip, FILTER_VALIDATE_IP);
+			$ip = ($ip === false) ? '0.0.0.0' : $ip;
+			
+			$usuarioDatos = array(
+					'nombreCompleto'		=> $nombre,
+					'email'					=> $email,
+					'tipoUsuario'			=> $tipoReg,
+					'tipoRegistro'			=> 'web',
+					'hashActivacion'		=> '',
+					'ip'					=> $ip
+			);
+			$this->db->insert('usuarios', $usuarioDatos);
+			$usuarioID = $this->db->insert_id();
+			
+			//Generar hash para activacion
+			$hashActivacion = sha1(mt_rand(10000,99999).time().$usuarioID);
+			
+			$activarDatos = array(
+				'hashActivacion' => $hashActivacion
+			);
+					
+			$this->db->where('usuarioId', $usuarioID);
+	        $this->db->update('usuarios', $activarDatos);
+				 
+		}else{
+			
+			$usuarioDatos 	= $this->usuario_model->buscaPerfilID($email,"email");
+			if($usuarioDatos[0]->tipoUsuario == "reparador"){
+				
+				$actualizaUsuario = array(
+					'tipoUsuario' => 'mixto'
+				);
+				
+				$this->db->where('usuarioId', $usuarioDatos[0]->usuarioId);
+        		$this->db->update('usuarios', $actualizaUsuario);
+				
+			}
+	
+			$usuarioID 		= $usuarioDatos[0]->usuarioId;
+			
+		}
+		
+		$filtros = array(
+			"usuarioID"		=> $usuarioID
+		);
+		
+		session_start();
+		$_SESSION['DatosTemporalesUsuario'] = serialize($filtros);
+		
+		$reparadorData = $this->usuario_model->cargaUsuario($reparadorId);
+		echo json_encode($reparadorData[0]);
+		exit;
+		
+	}
+
+	function enviarEmailCercanos(){
+		
+		$emailsReparadores = $_POST['tempRep'];
+		$this->load->library('email');
+		
+		$this->load->model('reparaciones/reparaciones_model');
+		
+		session_start();
+		$datosRep		= unserialize($_SESSION['DatosTemporalesUsuario']);
+		$datosUsuario	= $this->usuario_model->cargaUsuario($datosRep['usuarioID']); 
+		$solicitudDat	= $this->reparaciones_model->detalleReparacion($datosRep['solicitudId']);
+		
+		foreach($emailsReparadores as $rep){
+			
+			$this->email->set_newline("\r\n");
+			$this->email->from('contacto@reparadores.mx', 'Reparadores.mx');
+			$this->email->to($rep);
+			$this->email->subject('Solicitud de reparación');		
+			$this->email->message('
+				<html>
+					<head>
+						<meta charset="utf-8">
+						<title>Solicitud de reparacion</title>
+						<style>
+							h1, h2{font-size:20px; font-weight:700; margin:25px 0 3px}
+							body{font-family:helvetica,arial,sans-serif; background-color:#f4f5f7; font-size:.8em; line-height:20px; color:#555}
+							.wrap{margin:10px auto; width:500px; border:1px solid #ccc; padding:20px 40px; background-color:#fff; border-top:10px solid #999}
+							.wrapTwo{margin:10px auto; width:500px; border:1px solid #ccc; padding:20px 40px; background-color:#fff; border-top:10px solid #999}
+							a{color:#c30}
+							#regEmail{display:inline; width:200px; margin:40px auto; height:28px; text-align:center; background-color: #B81C2D; color:#fff; text-transform:uppercase; font-size:16px; padding:12px 30px 9px; border-radius:6px; text-decoration:none;}
+							li{list-style:none}
+							ul{margin:0; padding:0}
+							#foot{color:#777; font-size:10px;b order-top:1px solid #ccc; padding:10px 0}
+							em{color:#c30; font-style: normal}
+						</style>
+					</head>
+					<body style="background-color:#eee;">
+					<table cellpadding="40" align="center" bgcolor="#ffffff" border="0" cellspacing="0" cellpadding="0" width="600" style="width:600px font-family:helvetica,arial,sans-serif; border:1px solid #ccc; color:#555; margin-top:30px;">
+					  <tr>
+					    <td>
+						    <div class="wrap">
+							    <a href="http://reparadores.mx"><img src="http://reparadores.mx/assets/graphics/reparadores-logoNegro.jpg" alt="Reparadores" /></a>
+							    <h3>Necesitan de una reparación, a continuación te dejamos los detalles:</h3>
+							    <p>El usuario ' . $datosUsuario[0]->nombreCompleto . ' requiere de una reparación en ' . $solicitudDat[0]->categoriaNombre . '<p>
+							    <p>Este es el comentario del usuario: "' . $solicitudDat[0]->descripcion . '"</p>
+							    <p>Los datos del usuario: <br/>
+							    Email: ' . $datosUsuario[0]->email . '<br/>
+							    Teléfono: ' . $datosUsuario[0]->telefono . '</p>
+						   	</div>
+						 </td>
+						</tr>
+					</table>
+				</body>
+			</html>
+			');
+			$this->email->send();
+			
+		}
+		
+	}
+	
 }

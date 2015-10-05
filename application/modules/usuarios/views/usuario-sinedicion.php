@@ -6,19 +6,11 @@
 		<img src="<?=base_url()?><? if ($row->fotografiaPerfil == 'sinImagen.png'):?>sinfotografia.png<? else:?><?= $row->fotografiaPerfil;?><? endif?>" alt="Foto Perfil" />
 		</span>
 	</span>
-	<a id="reviewProf" href="<?=base_url()?>" title="<?= $row->nombreCompleto;?> reputation">
-		<span class="markColor">1,200</span>
-		<em class="alegreya">Mis Reseñas</em>
-	</a>
 </aside>
 <section id="infoProfTwo">
 	<h1><img id="proIcon" src="<?=base_url()?>assets/graphics/profile.png" alt="Perfil" /><?= $row->nombreCompleto;?></h1>
 	
 	<ul id="mainPerfil">
-	  <li>
-	    <strong>Email</strong>
-		<p><?=$perfil[0]->email;?></p>
-	  </li>
 	  <? if(isset($row->estadoNombre)):?>
 	  <li class="ovHid">
 	  	  <h4>Ubicación de <?= $row->nombreCompleto;?></h4>
@@ -80,13 +72,49 @@
 			<strong>Califcación</strong> <p><img src="<?=base_url()?>assets/graphics/5estrellas.png" alt="Estrellas" /></p>
 		</li>
 	</ul>
-	<a class="contTw accesoSoloUsuarios" data-fancybox-href="#ingresar" href="http://reparadores.mx/usuarios/contactar/107?url=reparacion-de-celulares"><img src="<?=base_url()?>assets/graphics/contactar-reparador.png" alt="Contactar"></a>
+	<?php session_start();
+	if(!isset($_SESSION['DatosTemporalesUsuario'])):?> 
+		<a class="contTw accesoUsuarioTemp" data-fancybox-href="#usuarioTemp" href="#"><img src="<?=base_url()?>assets/graphics/contactar-reparador.png" alt="Contactar"></a>
+	<?php else:?>
+		<p>Email: <?=$row->email;?></p>
+		<?php if(!empty($row->telefono)):?>
+			<p>Teléfono: <?=$row->telefono;?></p>
+		<?php endif;?>
+		<?php if(!empty($perfil[0]->celular)):?>
+			<p>Celular: <?=$row->celular;?></p>
+		<?php endif;?>
+	<?php endif;?>
 </aside>
 </div>
 <? if($perfil[0]->estatus == 'noAutorizado'):?>
 	<p>Tu cuenta aún no ha sido activada!</p>
 <? endif;?>
 <? endforeach; ?>
+<div id="usuarioTemp" style="display:none;">
+	<form id="loginForm" action="<?=base_url()?>registro/ingresar" method="post">
+		<? if(isset($error)) echo $error;?>
+	  	<span><div class="msgBlack"></div></span>
+	  	<fieldset class="bbW">
+	    	<label>Nombre Completo</label>
+			<input class="sans inBut" type="text" name="usuarioNombre" placeholder="Nombre Completo" required />
+	  	</fieldset>
+	  	<fieldset class="bbW">
+	    	<label>Email</label>
+			<input class="sans inBut" type="email" name="usuarioEmail" placeholder="Email" required />
+	  	</fieldset>
+	  	<fieldset class="bbW">
+	    	<label>Teléfono</label>
+			<input class="sans inBut" type="text" name="usuarioTel" placeholder="Teléfono" required />
+	  	</fieldset>
+	  	<fieldset class="mt20">
+	  		<input type="hidden" name="reparadorId" value="<?= $row->usuarioId;?>" />
+			<input id="cLog" class="sans bYel" type="submit" value="Enviar" />
+	  	</fieldset>
+	  	<fieldset class="mt10">
+		  	<i class="sans fOne">Al dar click en el boton entrar confirmas que aceptas nuestros </i><a class="sans fOne" href="<?=base_url()?>">Terminos  de Servicio</a>
+	  	</fieldset>
+	</form>
+</div>
 <script>
 // Tagit
     $("#myTags").tagit({
@@ -103,5 +131,29 @@
 	        });
     	}
          
+    });
+    
+    $(".accesoUsuarioTemp").fancybox({
+		'scrolling'		: 'no',
+		'titleShow'		: false
+	});
+    
+    $(document).ready(function(){
+    	$('#loginForm').submit(function(e){
+    		e.preventDefault();
+    		$('#loginForm .msgBlack').html('');
+    		$.post(ajax_url+"gusardaUsuarioTemp",$(this).serialize(),function(data){
+				sucess:				
+					if(data){
+						var telefono = (data.telefono && data.telefono != 0) ? '<p>Teléfono ' + data.telefono + '</p>' : '';
+						var celular = (data.celular && data.celular != 0) ? '<p>Celular ' + data.celular + '</p>' : '';
+						$('.accesoUsuarioTemp').remove();
+						$('#buttons #mainInPre').after('<p>Email: ' + data.email + '</p>'+telefono+celular);
+						$.fancybox.close();
+					}else{
+						$('#loginForm .msgBlack').html('Favor de ingresar todos los datos');
+					}
+			},"json");
+    	});
     });
 </script>

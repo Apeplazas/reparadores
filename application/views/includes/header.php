@@ -31,7 +31,6 @@
 		<div class="centerWrap">
 		<a id="logo" href="<?=base_url()?>"><img src="<?=base_url()?>assets/graphics/logo-reparadores.png" alt="Reparadores Mx" /></a>
 		<span>
-			<img src="<?=base_url()?>assets/graphics/atencionaclientes-reparadores.png" alt="Atencion a clientes" />
 			<? if(!isset($user) || $user != true):?>
 				<a id="acceso" href="<?=base_url()?>registro/ingresar"><img src="<?=base_url()?>assets/graphics/acceso.png" alt="Accesar" /></a>
 			<? else:?>
