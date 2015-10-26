@@ -59,18 +59,6 @@
 	<div id="map-canvas"></div>
 </div>
 <input type="hidden" id="reparadorIdTemporal" value="" />
-<div id="mostrar-solicitudes-usuario" style="display:none;">
-	<ul>
-	
-	<? foreach($solicitudesUsuario as $solicitud): ?>
-		<li>
-			<p><?=$solicitud->descripcion; ?></p>
-			<button id="<?=$solicitud->solicitudId; ?>-<?=$this->uri->segment(3); ?>-<?=$solicitud->usuarioId; ?>" class="solicitarCotizacion" ><img alt="Ver mas" src="<?=base_url();?>assets/graphics/solicitar-cotizacion.png"></button>
-		</li>
-	<? endforeach; ?>
-	</ul>
-
-</div>
 
 <script>
 	

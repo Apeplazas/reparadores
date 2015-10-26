@@ -35,7 +35,7 @@
 	var ajax_url = "<?=base_url();?>ajax/"
 </script>
 <script language="javascript" src="<?=base_url()?>assets/js/functions.js" type="text/javascript"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script src="<?=base_url()?>assets/js/jquery-ui.min.js"></script>
 <?= $this->layouts->print_includes(); ?>
 <link rel="icon" type="image/png" href="<?=base_url()?>assets/graphics/test.ico" />
 <? if ($this->uri->segment(2) == 'activar_cuenta'):?>

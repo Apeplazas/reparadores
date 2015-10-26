@@ -19,7 +19,7 @@
 	
 	<label>Subcategoría:</label>
 	<select id="subcategoriaReparadoresTwo">
-		<option value="all">Selecciona una subcategoría</option>
+		<option value="">Selecciona una subcategoría</option>
 		<? if(!empty($subcategorias)):?>
 			<? foreach($subcategorias as $subcatego): ?>
 			<option value="<?=$subcatego->url;?>" ><?=$subcatego->categoriaNombre;?></option>
@@ -54,7 +54,7 @@ $(document).ready(function(){
 	                success:  function (response) {
 	                	
 	                	subcat.html('');
-	                	subcat.append('<option value="all">Selecciona una subcategoría</option>');
+	                	subcat.append('<option value="">Selecciona una subcategoría</option>');
 	                	$.each(response,function(key,val){
 	                		
 	                		if(val.categoriaId != null){
